@@ -32,12 +32,12 @@ npm run start.
 
 The following plugins we are using right now:
 
-### Pretier
+### Prettier
 
 We are using it for code formatting, for configuration please see `.prettierrc.json`
 
 ### eslint
 
-We are using it for linting files, for configuration please see `sslintrc.json`
+We are using it for linting files, for configuration please see `eslintrc.json`
 
 **Note**: we are recommending to use correponding editor plugin for better interactivity. i.e. linter plugin for static type checking, formatter plugin for auto formatting etc.

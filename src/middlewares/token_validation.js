@@ -3,7 +3,7 @@ const { commonAPIResponse } = require('../utils/responseLib');
 
 module.exports = {
 	/**
-	 * Validate token from client side
+	 * Validate token comes from client side
 	 */
 	checkToken: (req, res, next) => {
 		if (req.path === '/login') {

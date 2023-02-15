@@ -1,5 +1,7 @@
 const { RegisterUser } = require('../models/user');
+const sequelize = require('../config/db.config');
 const User = require('../models/user');
+const Doctor = require('../models/doctor');
 const { commonAPIResponse } = require('../utils/responseLib');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -68,16 +70,38 @@ module.exports = {
 	 * User login
 	 */
 	userLogin: async (req, res) => {
+		const t = await sequelize.transaction();
 		try {
 			const { username, password } = req.body;
-			const isUserExist = await User.findOne({
-				where: {
-					email: username,
+			const isUserExist = await User.findOne(
+				{
+					where: {
+						email: username,
+					},
 				},
-			});
+				{
+					transaction: t,
+				},
+			);
 			if (!isUserExist || password !== isUserExist.password) {
 				throw 'INVALID_CRED';
 			}
+
+			const doctor = await Doctor.findOne(
+				{
+					where: {
+						user_id: isUserExist.id,
+					},
+				},
+				{
+					transaction: t,
+				},
+			);
+			if (!doctor) {
+				throw 'FAILED';
+			}
+
+			await t.commit();
 
 			let userData = {
 				userId: isUserExist.id,
@@ -87,70 +111,29 @@ module.exports = {
 			const token = jwt.sign(userData, process.env.JWT_SECRET_KEY, {
 				expiresIn: '8h',
 			});
-			let data = { ...userData, token };
+			let data = { ...userData, token, doctor_data: doctor };
 
 			res.status(200).send(
 				commonAPIResponse('User login successfully', 0, data),
 			);
 		} catch (error) {
 			console.log(error);
+
+			if (t) {
+				t.rollback();
+			}
+
 			if (error === 'INVALID_CRED') {
 				res.status(400).send(
 					commonAPIResponse('Invalid Username or Password', 1, null),
 				);
-			} else {
-				res.status(500).send(
+			} else if (error === 'FAILED') {
+				res.status(400).send(
 					commonAPIResponse(
-						'Something went wrong! Please try again after sometime',
-						3,
+						'Failed while fetching doctor detail',
+						1,
 						null,
 					),
-				);
-			}
-		}
-	},
-
-	/**
-	 * Count total no. of users
-	 */
-	countUsers: async (req, res) => {
-		try {
-			const countUserResponse = await RegisterUser.aggregate([
-				{
-					$match: {
-						createdAt: {
-							$gte: new Date(2021, 01, 01),
-							$lte: new Date(2021, 12, 31),
-						},
-						isAdmin: false,
-					},
-				},
-				{
-					$count: 'total_no_users',
-				},
-			]);
-			if (!countUserResponse) {
-				throw 'COUNT_USER_FAILED';
-			}
-			if (countUserResponse.length === 0) {
-				return res
-					.status(200)
-					.send(
-						commonAPIResponse(
-							'No User Found!',
-							0,
-							countUserResponse,
-						),
-					);
-			}
-			res.status(200).send(
-				commonAPIResponse('User data found!', 0, countUserResponse),
-			);
-		} catch (error) {
-			console.log(error);
-			if (error === 'COUNT_USER_FAILED') {
-				res.status(400).send(
-					commonAPIResponse('Count user failed!', 1, null),
 				);
 			} else {
 				res.status(500).send(

@@ -1,7 +1,8 @@
 const mainRouter = require('express').Router();
 const appConfig = require('./config/app.config');
 const userRouter = require('./routes/user');
-const postRouter = require('./routes/posts');
+const doctorRouter = require('./routes/doctor');
+const appointmentRouter = require('./routes/appointment');
 const { checkToken } = require('./middlewares/token_validation');
 
 /**
@@ -18,7 +19,10 @@ mainRouter.get(``, (req, res) =>
 // User API route
 mainRouter.use(`${API_VERSION}/user`, userRouter);
 
-// Post API route
-mainRouter.use(`${API_VERSION}/posts`, postRouter);
+// Doctor API route
+mainRouter.use(`${API_VERSION}/doctor`, doctorRouter);
+
+// Appointment API route
+mainRouter.use(`${API_VERSION}/appointment`, appointmentRouter);
 
 module.exports = mainRouter;
