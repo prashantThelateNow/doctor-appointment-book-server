@@ -8,6 +8,63 @@ const sequelize = require('../config/db.config');
 
 module.exports = {
 	/**
+	 * Fetch doctor by userId from database
+	 */
+	fetchDoctorByUserId: async (req, res) => {
+		try {
+			const t = await sequelize.transaction();
+			let { userId } = req.params;
+			let result = await Doctor.findOne(
+				{
+					where: {
+						user_Id: userId,
+					},
+				},
+				{
+					transaction: t,
+				},
+			);
+			if (!result) {
+				throw 'FAILED';
+			}
+
+			let response = { doctor: result };
+			if (result.length === 0) {
+				return res
+					.status(200)
+					.send(commonAPIResponse('No records found!', 0, response));
+			}
+
+			res.status(200).send(
+				commonAPIResponse(
+					'Doctor data fetched successfully!',
+					0,
+					response,
+				),
+			);
+		} catch (error) {
+			console.log(error);
+
+			if (error === 'FAILED') {
+				res.status(400).send(
+					commonAPIResponse(
+						'Failed while fetching records!',
+						1,
+						null,
+					),
+				);
+			} else {
+				res.status(500).send(
+					commonAPIResponse(
+						'Something went wrong! Looks like problem in server',
+						3,
+						null,
+					),
+				);
+			}
+		}
+	},
+	/**
 	 * Fetch doctors from database
 	 */
 	fetchDoctors: async (req, res) => {
