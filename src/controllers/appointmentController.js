@@ -289,19 +289,21 @@ module.exports = {
 							),
 							'date',
 						],
-						[
-							sequelize.fn(
-								'GROUP_CONCAT',
-								sequelize.fn(
-									'JSON_OBJECT',
-									'name',
-									sequelize.col('patient_name'),
-									'status',
-									sequelize.col('appointment_status'),
-								),
-							),
-							'appointments',
-						],
+						'patient_name',
+						'appointment_status',
+						// [
+						// 	sequelize.fn(
+						// 		'GROUP_CONCAT',
+						// 		sequelize.fn(
+						// 			'JSON_OBJECT',
+						// 			'name',
+						// 			sequelize.col('patient_name'),
+						// 			'status',
+						// 			sequelize.col('appointment_status'),
+						// 		),
+						// 	),
+						// 	'appointments',
+						// ],
 					],
 					where: {
 						createdAt: {
@@ -312,8 +314,15 @@ module.exports = {
 						},
 					},
 					group: [
-						sequelize.fn('date', sequelize.col('appointment_date')),
-						'date',
+						[
+							sequelize.fn(
+								'date',
+								sequelize.col('appointment_date'),
+							),
+							'date',
+						],
+						'patient_name',
+						'appointment_status',
 					],
 					order: [
 						sequelize.fn('date', sequelize.col('appointment_date')),
@@ -329,16 +338,16 @@ module.exports = {
 
 			await t.commit();
 
-			let transformedList = result.map((row) => ({
-				date: row.date,
-				appointments: JSON.parse(`[${row.appointments}]`),
-			}));
+			// let transformedList = result.map((row) => ({
+			// 	date: row.date,
+			// 	appointments: JSON.parse(`[${row.appointments}]`),
+			// }));
 
 			let response = {
-				appointment_detail: transformedList,
-				length: transformedList.length,
+				appointment_detail: result,
+				length: result.length,
 			};
-			if (transformedList.length === 0) {
+			if (result.length === 0) {
 				return res
 					.status(200)
 					.send(commonAPIResponse('No records found!', 0, response));
