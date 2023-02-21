@@ -3,7 +3,6 @@ const appConfig = require('./config/app.config');
 const userRouter = require('./routes/user');
 const doctorRouter = require('./routes/doctor');
 const appointmentRouter = require('./routes/appointment');
-const { checkToken } = require('./middlewares/token_validation');
 
 /**
  * All routing initiation

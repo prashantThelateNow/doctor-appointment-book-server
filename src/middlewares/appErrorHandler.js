@@ -20,7 +20,7 @@ const globalErrorHandler = (err, req, res, next) => {
 /**
  * Global route not found handler
  */
-const globalNotFoundHandler = (req, res, next) => {
+const globalNotFoundHandler = (req, res) => {
 	// basicInfo("Global not found handler called");
 	let apiResponse = generate(
 		true,
