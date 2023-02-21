@@ -46,18 +46,19 @@ We are using it for linting files, for configuration please see `eslintrc.json`
 
 ```
 Consider following folder structure:
-
 |
-| main app 	| - node_modules
-			| - src 				| - config
-			| - .editorconfig		| - constants
-			| - .env				| - controllers
-			| - .eslintrc			| - middlewares
-			| - .gitignore			| - models
-			| - .prettierrc			| - routes
-			| - package.json		| - services
-			| - package-lock.json	| - utils
-			| - README.md			| - validations
-			| - main_router.js
-			| - server.js
+| - main app	|
+				| - node_modules
+			 	| - src 			-	|
+				| - .editorconfig		| - config
+				| - .env				| - constants
+				| - .eslintrc			| - controllers
+				| - .gitignore			| - middlewares
+				| - .prettierrc			| - models
+				| - package.json		| - routes
+				| - package-lock.json	| - services
+				| - README.md			| - utils
+				| - main_router.js		| - validations
+				| - server.js
+
 ```
