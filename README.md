@@ -41,3 +41,23 @@ We are using it for code formatting, for configuration please see `.prettierrc.j
 We are using it for linting files, for configuration please see `eslintrc.json`
 
 **Note**: we are recommending to use correponding editor plugin for better interactivity. i.e. linter plugin for static type checking, formatter plugin for auto formatting etc.
+
+## Folder Structure
+
+```
+Consider following folder structure:
+
+|
+| - main app ---> 	| - node_modules
+	          		| - src 	----------->	| - config
+		  			| - .editorconfig			| - constants
+		  			| - .env					| - controllers
+					| - .eslintrc				| - middlewares
+					| - .gitignore				| - models
+					| - .prettierrc				| - routes
+					| - package.json			| - services
+					| - package-lock.json		| - utils
+					| - README.md				| - validations
+					| - main_router.js
+					| - server.js
+```
